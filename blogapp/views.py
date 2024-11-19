@@ -95,7 +95,15 @@ def delete_blog(request, pk):
         return Response({"error": "You are not the author of this blog"}, status=status.HTTP_403_FORBIDDEN)
     blog.delete()
     return Response({"message": "Blog deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    
+
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def get_username(request):
+    user = request.user
+    username = user.username
+    return Response({"username": username})
 
 
 
