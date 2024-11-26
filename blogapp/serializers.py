@@ -43,4 +43,16 @@ class BlogSerializer(serializers.ModelSerializer):
         model = Blog
         fields = ['id', 'title', 'slug', 'author', 'category', 'content', 'featured_image', 'published_date', 'created_at', 'updated_at', 'is_draft']
 
-        
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    author_posts = serializers.SerializerMethodField()
+    class Meta:
+        model = get_user_model()
+        fields = ["id", "username", "first_name", "last_name", "job_title", "bio", "profile_picture", "author_posts"]
+
+    
+    def get_author_posts(self, user):
+        blogs = Blog.objects.filter(author=user)[:9]
+        serializer = BlogSerializer(blogs, many=True)
+        return serializer.data

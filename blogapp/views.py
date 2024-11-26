@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Blog
-from .serializers import UpdateUserProfileSerializer, UserRegistrationSerializer, BlogSerializer
+from django.contrib.auth import get_user_model
+from .serializers import UpdateUserProfileSerializer, UserInfoSerializer, UserRegistrationSerializer, BlogSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -98,12 +99,20 @@ def delete_blog(request, pk):
 
 
 
-@api_view(["POST"])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_username(request):
     user = request.user
     username = user.username
     return Response({"username": username})
+
+
+@api_view(['GET'])
+def get_userinfo(request, username):
+    User = get_user_model()
+    user = User.objects.get(username=username)
+    serializer = UserInfoSerializer(user)
+    return Response(serializer.data)
 
 
 
