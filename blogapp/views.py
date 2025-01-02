@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .models import Blog
 from django.contrib.auth import get_user_model
-from .serializers import UpdateUserProfileSerializer, UserInfoSerializer, UserRegistrationSerializer, BlogSerializer
+from .serializers import SimpleAuthorSerializer, UpdateUserProfileSerializer, UserInfoSerializer, UserRegistrationSerializer, BlogSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -14,20 +14,20 @@ class BlogListPagination(PageNumberPagination):
 
 
 # Create your views here.
-@api_view(["GET"])
-def blog_list(request):
-    blogs = Blog.objects.all()
-    paginator = BlogListPagination()
-    paginated_blogs = paginator.paginate_queryset(blogs, request)
-    serializer = BlogSerializer(paginated_blogs, many=True)
-    return paginator.get_paginated_response(serializer.data)
-
-
-# @api_view(['GET'])
+# @api_view(["GET"])
 # def blog_list(request):
 #     blogs = Blog.objects.all()
-#     serializer = BlogSerializer(blogs, many=True)
-#     return Response(serializer.data)
+#     paginator = BlogListPagination()
+#     paginated_blogs = paginator.paginate_queryset(blogs, request)
+#     serializer = BlogSerializer(paginated_blogs, many=True)
+#     return paginator.get_paginated_response(serializer.data)
+
+
+@api_view(['GET'])
+def blog_list(request):
+    blogs = Blog.objects.all()
+    serializer = BlogSerializer(blogs, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def get_blog(request, slug):
@@ -113,6 +113,18 @@ def get_userinfo(request, username):
     user = User.objects.get(username=username)
     serializer = UserInfoSerializer(user)
     return Response(serializer.data)
+
+
+@api_view(["GET"])
+def get_user(request, email):
+    User = get_user_model()
+    try:
+        existing_user = User.objects.get(email=email)
+        serializer = SimpleAuthorSerializer(existing_user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+    
 
 
 
