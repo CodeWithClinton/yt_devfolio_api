@@ -15,7 +15,7 @@ class UpdateUserProfileSerializer(serializers.ModelSerializer):
 class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ["id", "username", "email", "first_name", "last_name"]
+        fields = ["id", "username", "email", "first_name", "last_name", "profile_picture_url"]
         # extra_kwargs = {
         #     'password': {'write_only': True} 
         # }
@@ -24,12 +24,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         username = validated_data["username"]
         first_name = validated_data["first_name"]
         last_name = validated_data["last_name"]
-        first_name = validated_data["first_name"]
+        profile_picture_url = validated_data["profile_picture_url"]
         email = validated_data["email"]
 
         user = get_user_model()
         new_user = user.objects.create(username=username, email=email,
-                                       first_name=first_name, last_name=last_name)
+                                       first_name=first_name, last_name=last_name, profile_picture_url=profile_picture_url)
         # new_user.set_password(password)
         # new_user.save()
         return new_user
@@ -62,13 +62,14 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class SimpleAuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ["id", "username", "first_name", "last_name", "email", "profile_picture"]
+        fields = ["id", "username", "first_name", "last_name", "email", "profile_picture", "profile_picture_url"]
 
 class BlogSerializer(serializers.ModelSerializer):
     author = SimpleAuthorSerializer(read_only=True)
+    author_id = serializers.IntegerField()
     class Meta:
         model = Blog
-        fields = ['id', 'title', 'slug', 'author', 'category', 'content', 'featured_image', 'published_date', 'created_at', 'updated_at', 'is_draft']
+        fields = ['id', 'title', 'slug', 'author', 'author_id', 'category', 'content', 'featured_image', 'published_date', 'created_at', 'updated_at', 'is_draft']
 
 
 
@@ -76,7 +77,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
     author_posts = serializers.SerializerMethodField()
     class Meta:
         model = get_user_model()
-        fields = ["id", "username", "first_name", "last_name", "job_title", "bio", "profile_picture", "author_posts"]
+        fields = ["id", "username", "first_name", "last_name", "job_title", "bio", "profile_picture", "author_posts", "profile_picture_url"]
 
     
     def get_author_posts(self, user):

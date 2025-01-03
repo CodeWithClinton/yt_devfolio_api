@@ -10,6 +10,7 @@ from django.utils import timezone
 class CustomUser(AbstractUser):
     bio = models.TextField(blank=True, null=True)
     profile_picture = models.ImageField(upload_to="profile_img", blank=True, null=True)
+    profile_picture_url = models.URLField(blank=True, null=True)
     job_title = models.CharField(max_length=50, blank=True, null=True)
 
     facebook = models.URLField(max_length=255, blank=True, null=True)
