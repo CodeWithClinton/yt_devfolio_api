@@ -77,7 +77,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
     author_posts = serializers.SerializerMethodField()
     class Meta:
         model = get_user_model()
-        fields = ["id", "username", "first_name", "last_name", "job_title", "bio", "profile_picture", "author_posts", "profile_picture_url"]
+        fields = ["id", "username", "email", "first_name", "last_name", "job_title", "bio", "profile_picture", "author_posts", "profile_picture_url"]
 
     
     def get_author_posts(self, user):

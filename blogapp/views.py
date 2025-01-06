@@ -82,13 +82,22 @@ def create_blog(request):
 
 
 
+# @api_view(["PUT"])
+# @permission_classes([IsAuthenticated])
+# def update_blog(request, pk):
+#     user = request.user
+#     blog = Blog.objects.get(id=pk)
+#     if blog.author != user:
+#         return Response({"error": "You are not the author of this blog"}, status=status.HTTP_403_FORBIDDEN)
+#     serializer = BlogSerializer(blog, data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data)
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(["PUT"])
-@permission_classes([IsAuthenticated])
 def update_blog(request, pk):
-    user = request.user
     blog = Blog.objects.get(id=pk)
-    if blog.author != user:
-        return Response({"error": "You are not the author of this blog"}, status=status.HTTP_403_FORBIDDEN)
     serializer = BlogSerializer(blog, data=request.data)
     if serializer.is_valid():
         serializer.save()
